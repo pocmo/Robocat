@@ -122,34 +122,39 @@ def format_message_log(robocop_message):
 
 
 def format_message_test_status(robocop_message):
+  color = BLACK;
+
   message = colorize('     TEST ', bg=WHITE)
   if robocop_message['status'] == 'PASS':
     message += colorize(' PASS ', fg=BLACK, bg=GREEN) + ' '
+    color = GREEN
   elif robocop_message['status'] == 'FAIL':
     message += colorize(' FAIL ', fg=BLACK, bg=RED) + ' '
+    color = RED
   elif robocop_message['status'] == 'OK':
     message += colorize('  OK  ', fg=BLACK, bg=YELLOW) + ' '
+    color = YELLOW
   
-  message += robocop_message['subtest']
+  message += colorize(robocop_message['subtest'], fg=color)
 
   test_message = robocop_message['message'].strip()
   if test_message:
     message += '\n'
     message += colorize('     TEST       ', bg=WHITE)
-    message += ' ' + test_message
+    message += ' ' + colorize(test_message, fg=color)
 
   return message
 
 
 def format_message_test_start(robocop_message):
   message = colorize(' START' + ' ' * 10, bg=MAGENTA)
-  message += ' ' + robocop_message['test']  
+  message += ' ' + colorize(robocop_message['test'], fg=MAGENTA)
   return message
 
 
 def format_message_test_end(message):
   message = colorize('  END ' + ' ' * 10, bg=CYAN)
-  message += ' ' + robocop_message['test']
+  message += ' ' + colorize(robocop_message['test'], fg=CYAN)
   return message
 
 
