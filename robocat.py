@@ -15,6 +15,7 @@ import sys
 import re
 import subprocess
 import json
+import datetime
 
 from subprocess import PIPE
 
@@ -114,17 +115,25 @@ last_tag = None
 app_pid = None
 
 
+def parse_time(time):
+  d = datetime.datetime.fromtimestamp(time / 1000)
+  return d.strftime("[%H:%M:%S] ")
+
+
 def format_message_log(robocop_message):
-  message = colorize('      LOG    ', bg=WHITE)
+  message = parse_time(robocop_message['time'])
+  message += colorize('      LOG    ', bg=WHITE)
   message += ROBOCOP_LOG_LEVELS.get(robocop_message['level'], ROBOCOP_LOG_LEVELS['unknown'])
   message += ' ' + robocop_message["message"]
   return message
 
 
 def format_message_test_status(robocop_message):
+  message = parse_time(robocop_message['time'])
+
   color = BLACK;
 
-  message = colorize('     TEST ', bg=WHITE)
+  message += colorize('     TEST ', bg=WHITE)
   if robocop_message['status'] == 'PASS':
     message += colorize(' PASS ', fg=BLACK, bg=GREEN) + ' '
     color = GREEN
@@ -140,6 +149,7 @@ def format_message_test_status(robocop_message):
   test_message = robocop_message['message'].strip()
   if test_message:
     message += '\n'
+    message += '           '
     message += colorize('     TEST       ', bg=WHITE)
     message += ' ' + colorize(test_message, fg=color)
 
@@ -147,13 +157,15 @@ def format_message_test_status(robocop_message):
 
 
 def format_message_test_start(robocop_message):
-  message = colorize(' START' + ' ' * 10, bg=MAGENTA)
+  message = parse_time(robocop_message['time'])
+  message += colorize(' START' + ' ' * 10, bg=MAGENTA)
   message += ' ' + colorize(robocop_message['test'], fg=MAGENTA)
   return message
 
 
 def format_message_test_end(message):
-  message = colorize('  END ' + ' ' * 10, bg=CYAN)
+  message = parse_time(robocop_message['time'])
+  message += colorize('  END ' + ' ' * 10, bg=CYAN)
   message += ' ' + colorize(robocop_message['test'], fg=CYAN)
   return message
 
@@ -163,7 +175,8 @@ def format_message_unknown(message):
 
 
 def format_message_raw(raw_message):
-  message = colorize('      RAW       ', bg=WHITE)
+  message = '           '
+  message += colorize('      RAW       ', bg=WHITE)
   message += ' ' + raw_message
   return message
 
