@@ -130,7 +130,14 @@ def format_message_test_status(robocop_message):
   elif robocop_message['status'] == 'OK':
     message += colorize('  OK  ', fg=BLACK, bg=YELLOW) + ' '
   
-  message += robocop_message['subtest'] + ' - ' + robocop_message['message']
+  message += robocop_message['subtest']
+
+  test_message = robocop_message['message'].strip()
+  if test_message:
+    message += '\n'
+    message += colorize('     TEST       ', bg=WHITE)
+    message += ' ' + test_message
+
   return message
 
 
