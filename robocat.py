@@ -146,6 +146,9 @@ def format_message_test_status(robocop_message):
   
   message += colorize(robocop_message['subtest'], fg=color)
 
+  if not 'message' in robocop_message:
+    return None
+
   test_message = robocop_message['message'].strip()
   if test_message:
     message += '\n'
@@ -239,4 +242,5 @@ while adb.poll() is None:
   except ValueError:
     message = format_message_raw(message)
 
-  print(message)
+  if message:
+    print(message)
